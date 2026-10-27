@@ -1,0 +1,779 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Opus 5.5 × GTM × Grok Bot — an interactive 19-page handbook by @0xMorlex"><style>body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style></head><body><title>Opus 5.5 GTM Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Silkscreen:wght@400;700&display=swap">
+<style>
+/* Layout: one desk — the book is the hero, controls sit under it, chapters and sources follow. */
+:root{
+ --desk:#bf6340; --desk-2:#a9532f; --on-desk:#fbf1e6; --on-desk-2:#f3d9c8; --line-desk:rgba(251,241,230,.28);
+ --ink-block:#1c1613; --accent:#1c1613; --chip:#fbf1e6; --chip-ink:#1c1613; --focus:#fbf1e6;
+ --f-display:'Inter',system-ui,sans-serif; --f-pix:'Silkscreen',ui-monospace,monospace;
+ --f-serif:'Instrument Serif',Georgia,serif; --f-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+ --desk:#1a1411; --desk-2:#120e0c; --on-desk:#f3e9dc; --on-desk-2:#c8b6a6; --line-desk:rgba(243,233,220,.16);
+ --ink-block:#2a201b; --accent:#e98a5f; --chip:#2a201b; --chip-ink:#f3e9dc; --focus:#e98a5f; color-scheme:dark}}
+:root[data-theme="dark"]{
+ --desk:#1a1411; --desk-2:#120e0c; --on-desk:#f3e9dc; --on-desk-2:#c8b6a6; --line-desk:rgba(243,233,220,.16);
+ --ink-block:#2a201b; --accent:#e98a5f; --chip:#2a201b; --chip-ink:#f3e9dc; --focus:#e98a5f; color-scheme:dark}
+body{background:var(--desk);color:var(--on-desk);font-family:'Inter',system-ui,sans-serif;
+ background-image:repeating-linear-gradient(178deg,rgba(0,0,0,.035) 0 2px,transparent 2px 9px),radial-gradient(120% 80% at 50% 30%,transparent 40%,rgba(0,0,0,.18));
+ background-attachment:fixed}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{padding-block:22px 8px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-desk-2)}
+.topbar b{color:var(--on-desk);letter-spacing:.12em}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding-block:26px 18px;border-bottom:1px solid var(--line-desk)}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,7.4vw,104px);line-height:.88;letter-spacing:-.045em;text-wrap:balance}
+.hero h1 .pix{font-family:var(--f-pix);font-weight:700;font-size:.42em;letter-spacing:.02em;display:block;margin-bottom:.35em;color:var(--on-desk-2)}
+.hero p{font-family:var(--f-serif);font-style:italic;font-size:clamp(22px,2.4vw,30px);line-height:1.2;color:var(--on-desk-2);max-width:34ch;margin-top:14px}
+.hero .meta{font-family:var(--f-mono);font-size:13px;line-height:1.8;color:var(--on-desk-2);text-align:right;font-variant-numeric:tabular-nums}
+.hero .meta b{color:var(--on-desk);font-size:15px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.hero .meta{text-align:left}}
+
+.stage{position:relative;width:100%;margin-top:18px;touch-action:pan-y;user-select:none;-webkit-user-select:none;overflow:hidden}
+.stage:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:12px}
+.world{position:absolute;left:50%;top:50%;width:0;height:0;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+#persp{position:absolute;left:0;top:0;width:0;height:0;perspective:6200px;perspective-origin:0 0}
+.leaf{transition:transform .9s cubic-bezier(.65,0,.35,1)}
+.shade{transition:opacity .9s ease}
+.face.blank{background:#efe7d8!important}
+#shadowEl{position:absolute;top:-683px;left:22px;width:1073px;height:1427px;border-radius:30px;background:rgba(40,12,4,.5);filter:blur(40px);transition:left .9s cubic-bezier(.65,0,.35,1),width .9s cubic-bezier(.65,0,.35,1)}
+.hint{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-desk-2);pointer-events:none;transition:opacity .4s}
+
+.controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;padding-block:16px 8px}
+.btn{font-family:var(--f-mono);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--on-desk);background:transparent;color:var(--on-desk);border-radius:10px;padding:11px 16px;cursor:pointer;min-height:44px}
+.btn:hover{background:var(--on-desk);color:var(--desk)}
+.btn:focus-visible,.chap:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.btn.solid{background:var(--ink-block);border-color:var(--ink-block);color:#fbf1e6}
+.btn.solid:hover{filter:brightness(1.25);color:#fbf1e6;background:var(--ink-block)}
+.btn[disabled]{opacity:.4;cursor:default}
+.pageno{font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums;color:var(--on-desk);min-width:13ch;text-align:center}
+
+section.chapters{padding-block:34px 10px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:2px solid var(--on-desk);padding-bottom:10px;margin-bottom:6px}
+.sec-h h2{font-family:var(--f-pix);font-weight:700;font-size:clamp(26px,3.2vw,38px);letter-spacing:.02em}
+.sec-h span{font-family:var(--f-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-desk-2)}
+.chaps{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 28px;margin:0;padding:0}
+@media (max-width:980px){.chaps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.chaps{grid-template-columns:1fr}}
+.chap{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:16px;row-gap:4px;width:100%;padding:18px 0;border-bottom:1px solid var(--line-desk)}
+.chap:hover .chap-t{text-decoration:underline;text-underline-offset:4px}
+.chap-n{grid-row:1/3;font-family:var(--f-pix);font-weight:700;font-size:30px;line-height:1;color:var(--on-desk-2)}
+.chap-t{font-weight:700;font-size:20px;line-height:1.2}
+.chap-p{font-family:var(--f-mono);font-size:12px;color:var(--on-desk-2);font-variant-numeric:tabular-nums;padding-top:4px}
+.chap-d{grid-column:2/4;font-size:15px;line-height:1.45;color:var(--on-desk-2)}
+footer{padding-block:34px 40px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:28px;border-top:1px solid var(--line-desk);padding-top:18px}
+@media (max-width:760px){.foot-grid{grid-template-columns:1fr}}
+.foot-grid h3{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-desk-2);margin-bottom:10px}
+.foot-grid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.foot-grid a{color:var(--on-desk);text-underline-offset:3px}
+.foot-grid p{font-size:15px;line-height:1.5;color:var(--on-desk-2)}
+.handle{font-family:var(--f-pix);font-weight:700;font-size:26px;color:var(--on-desk);margin-bottom:8px}
+
+/* reader overlay */
+.reader{position:fixed;inset:0;z-index:50;background:rgba(15,10,8,.95);overflow-y:auto;overscroll-behavior:contain;
+ padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.reader-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:900px;margin:0 auto 14px;padding-block:6px;z-index:2}
+.reader-bar span{font-family:var(--f-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#f3e9dc}
+.reader-bar .btn{border-color:#f3e9dc;color:#f3e9dc;background:#1c1613}
+.reader-pages{display:flex;flex-direction:column;align-items:center;gap:18px}
+.rpage{position:relative;max-width:900px;width:100%;border-radius:8px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.rpage .inner{position:absolute;left:0;top:0;width:1052px;height:1390px;transform-origin:0 0}
+.rpage .inner.cov{width:1073px;height:1427px}
+.rpage .inner{background:var(--paperbg)}.rpage .inner.cov{background:#c4633d}.rpage .inner.ep-bg{background:#1f1815}
+.bookroot{--paperbg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),#f4eee3}
+@media (max-width:819px){
+ .rpage{height:auto!important}
+ .rpage .inner{position:relative;width:auto!important;height:auto!important;transform:none!important;zoom:.66}
+ .rpage .inner .pg{position:relative;inset:auto;min-height:0}
+ .rpage .inner .pf{margin-top:24px}
+ .rpage pre{overflow-x:auto;white-space:pre}
+ .rpage .bar .fill{max-width:62%}
+ .rpage .cols{column-count:1}
+ .rpage .inner.cov{zoom:.34}
+ .rpage .inner.cov .ep{position:relative}
+ .rpage .inner.cov .sw{position:relative}
+}
+@media (prefers-reduced-motion: reduce){.world,.leaf,.shade,#shadowEl{transition:none!important}}
+
+.bookroot{--ink:#221a16;--ink2:#5e4e45;--terra:#c4643f;--terra-d:#9e4a2c;--teal:#2e6e68;--mustard:#c9922a;
+ --t-terra:#f4ddd1;--t-teal:#d8e8e4;--t-mustard:#f6e6c2;--cream:#f6efe3;--line:#ddd1bf;--sand:#cfc0aa}
+*{box-sizing:border-box;margin:0;padding:0}
+
+
+
+.abs{position:absolute}
+
+
+#persp{position:absolute;left:0;top:0;width:0;height:0;perspective:6200px;perspective-origin:0 0}
+#book{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.board{left:0;top:-713.5px;width:1073px;height:1427px;border-radius:6px 52px 52px 6px;background:#c4633d;box-shadow:inset 0 0 0 2px rgba(80,30,10,.25)}
+#spine{left:-49px;top:-713.5px;width:52px;height:1427px;border-radius:18px 0 0 18px;
+ background:linear-gradient(180deg,#1c1613 0 55.8%,#c4633d 55.8% 100%);box-shadow:inset -8px 0 12px rgba(0,0,0,.25)}
+#stack{left:2px;top:-697px;width:1058px;height:1396px;border-radius:2px 10px 10px 2px;
+ background:repeating-linear-gradient(90deg,#efe7d8 0 3px,#d8ccb8 3px 4px);transform:translateZ(.5px)}
+.leaf{position:absolute;left:0;transform-style:preserve-3d;transform-origin:0 50%}
+.leaf.paper{top:-695px;width:1052px;height:1390px}
+.leaf.cover{top:-713.5px;width:1073px;height:1427px}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.face.back{transform:rotateY(180deg)}
+.cover .face.front{border-radius:6px 52px 52px 6px;background:#c4633d}
+.cover .face.back{background:#1f1815;border-radius:52px 6px 6px 52px}
+.paper .face{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),#f4eee3;border-radius:3px 10px 10px 3px}
+.paper .face.back{border-radius:10px 3px 3px 10px}
+.shade{position:absolute;inset:0;background:#2a1208;opacity:0;pointer-events:none}
+.gutter-l::after,.gutter-r::after{content:"";position:absolute;top:0;bottom:0;width:80px;pointer-events:none}
+.gutter-l::after{left:0;background:linear-gradient(90deg,rgba(60,30,10,.18),rgba(60,30,10,0))}
+.gutter-r::after{right:0;background:linear-gradient(270deg,rgba(60,30,10,.18),rgba(60,30,10,0))}
+
+/* ---- document pages ---- */
+.pg{position:absolute;inset:0;padding:58px 66px 50px 86px;color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:25px;line-height:1.52;display:flex;flex-direction:column}
+.back .pg{padding:58px 86px 50px 66px}
+.rh{display:flex;justify-content:space-between;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);border-bottom:1.5px solid var(--line);padding-bottom:12px;margin-bottom:26px}
+.rh .bk{color:var(--terra-d)}
+.pf{margin-top:auto;display:flex;justify-content:space-between;gap:20px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:16px;color:var(--ink2);border-top:1.5px solid var(--line);padding-top:12px}
+.pf b{color:var(--ink);font-size:18px}
+.kick{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:19px;letter-spacing:.3em;text-transform:uppercase;font-weight:700}
+.pg h1{font-family:'Silkscreen',ui-monospace,monospace;font-weight:700;font-size:88px;line-height:.95;margin-top:6px;text-shadow:5px 5px 0 var(--terra)}
+.pg h1.sm{font-size:70px;text-shadow:4px 4px 0 var(--terra)}
+.dek{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:42px;line-height:1.1;color:var(--terra-d);margin:8px 0 18px}
+.pg h2{font-size:29px;font-weight:700;margin:20px 0 6px;display:flex;align-items:center;gap:12px}
+.pg h2::before{content:"";width:16px;height:16px;border-radius:3px;background:var(--terra);flex:none}
+.pg h2.sq-teal::before{background:var(--teal)}.pg h2.sq-mustard::before{background:var(--mustard)}
+.pg h3{font-size:26px;font-weight:700;line-height:1.25;margin:0 0 2px}
+.pg p{margin:0 0 12px}
+.pg p.small{font-size:22px;color:var(--ink2)}
+.pg ul{margin:4px 0 12px 0;list-style:none}
+.pg ul li{position:relative;padding-left:26px;margin-bottom:6px}
+.pg ul li::before{content:"";position:absolute;left:4px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--teal)}
+.pg code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.86em;background:#ebe0cf;border-radius:5px;padding:1px 7px}
+.pg pre{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:21px;line-height:1.45;background:#211a16;color:#efe5d6;border-radius:14px;padding:18px 22px;margin:8px 0 14px;white-space:pre}
+.pg pre .c{color:#a8968a}.pg pre .k{color:#f0936d}.pg pre .s{color:#e8c27a}
+.pg pre.term{background:#18302d;color:#e3efe9}.pg pre.term .s{color:#f0c674}
+.t{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:23px}
+.t th{text-align:left;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-weight:700;padding:9px 12px;background:rgba(46,110,104,.10);border-bottom:2px solid var(--teal)}
+.t td{padding:9px 12px;border-bottom:1.5px solid var(--line);vertical-align:top}
+.t .r{text-align:right}
+.t.kv td:first-child{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);width:250px;padding-top:12px}
+.call{border-left:7px solid var(--terra);background:var(--t-terra);border-radius:0 12px 12px 0;padding:14px 20px;margin:12px 0;font-size:24px;line-height:1.45}
+.call.teal{border-color:var(--teal);background:var(--t-teal)}
+.call.mustard{border-color:var(--mustard);background:var(--t-mustard)}
+.c-terra{color:var(--terra)!important}.c-teal{color:var(--teal)!important}.c-mustard{color:var(--mustard)!important}
+.b-terra{background:var(--terra)!important}.b-teal{background:var(--teal)!important}.b-mustard{background:var(--mustard)!important}.b-sand{background:var(--sand)!important}.b-ink{background:var(--ink)!important}
+.legend{display:flex;gap:26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;color:var(--ink2);margin-bottom:6px}
+.legend i{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:-3px;margin-right:8px}
+.bench{margin:10px 0 6px}.bench .name{font-size:22px;font-weight:700;margin-bottom:4px}
+.bar{display:flex;align-items:center;gap:12px;height:26px;margin-bottom:4px}
+.bar .fill{height:100%;border-radius:5px}
+.bar .num{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;color:var(--ink2)}.bar.a .num{color:var(--ink);font-weight:700}
+.case{display:flex;gap:22px;padding:11px 0;border-top:1.5px solid var(--line)}
+.case>b{font-family:'Silkscreen',ui-monospace,monospace;font-size:36px;width:170px;flex:none;line-height:1.05;padding-top:2px}
+.case p{margin:0;font-size:24px}
+.num{display:flex;gap:20px;padding:10px 0;border-top:1.5px solid var(--line)}
+.num>b{width:46px;height:46px;flex:none;border-radius:10px;color:#fff;font-family:'Silkscreen',ui-monospace,monospace;font-size:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.num p{margin:0;font-size:24px}
+.flow{display:flex;gap:8px;margin:6px 0 18px}
+.flow span{flex:1;text-align:center;color:#fff;font-family:'Silkscreen',ui-monospace,monospace;font-weight:700;font-size:21px;padding:12px 4px;border-radius:9px}
+.cols{column-count:2;column-gap:34px}
+.cols h3{margin-top:2px;break-after:avoid}.cols p{font-size:23.5px;break-inside:avoid}
+.fn{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;letter-spacing:.12em;color:var(--ink2);margin-top:8px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 14px}
+.chips span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:19px;border-radius:999px;padding:6px 16px;border:2px solid}
+.ch-terra{border-color:var(--terra);color:var(--terra-d);background:var(--t-terra)}
+.ch-teal{border-color:var(--teal);color:var(--teal);background:var(--t-teal)}
+.ch-mustard{border-color:var(--mustard);color:#7a5714;background:var(--t-mustard)}
+.dig{border:2px solid var(--ink);border-radius:14px;padding:14px 20px;background:rgba(255,255,255,.45);margin:6px 0 10px}
+.dh{display:flex;justify-content:space-between;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;letter-spacing:.14em;color:var(--ink2);margin-bottom:6px}
+.dr{display:flex;align-items:center;gap:16px;height:44px;border-top:1.5px solid var(--line)}
+.dr b{font-family:'Silkscreen',ui-monospace,monospace;font-size:24px;width:42px}.dr i{height:14px;border-radius:7px;background:#d7c8b4}
+.dr em{margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-style:normal;font-size:18px}
+.dlab{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;color:var(--ink2);margin-top:6px}
+.tl div{display:flex;gap:22px;padding:11px 0;border-top:1.5px solid var(--line);align-items:baseline}
+.tl div>b{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:23px;width:86px;flex:none}
+.cl div{display:flex;gap:18px;align-items:center;padding:12px 0;border-top:1.5px solid var(--line);font-size:24px}
+.cl i{width:30px;height:30px;border:3px solid var(--teal);border-radius:7px;flex:none}
+.cl div:nth-child(3n+2) i{border-color:var(--terra)}.cl div:nth-child(3n) i{border-color:var(--mustard)}
+
+/* ---- endpaper ---- */
+.ep{position:absolute;inset:0;padding:90px 90px 80px 96px;color:#f3e9dc;display:flex;flex-direction:column}
+.ep .lbl{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:22px;letter-spacing:.32em;color:#e98a5f}
+.ep .big{font-family:'Silkscreen',ui-monospace,monospace;font-weight:700;font-size:92px;line-height:1.04;margin-top:34px}
+.ep .big .x{font-family:'JetBrains Mono',ui-monospace,monospace;color:#e98a5f}
+.toc{margin-top:46px;border-top:2px solid rgba(243,233,220,.25)}
+.toc div{display:flex;align-items:baseline;gap:18px;padding:17px 0;border-bottom:2px solid rgba(243,233,220,.25);font-family:'Instrument Serif',Georgia,serif;font-size:46px}
+.toc div i{font-family:'JetBrains Mono',ui-monospace,monospace;font-style:normal;font-size:22px;width:54px}
+.toc div em{margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-style:normal;font-size:24px;color:#cdbfb1}
+.ep .foot{margin-top:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:22px;line-height:1.6;color:#cdbfb1}
+
+/* ---- swiss cover (#4) ---- */
+.sw{position:absolute;left:0;top:0;width:900px;height:1197px;zoom:1.1922;background:#c4633d}
+.sw .top{position:absolute;left:0;right:0;top:0;height:668px;background:#1c1613}
+.sw .c{position:absolute;inset:0;padding:80px 78px 70px 100px;display:flex;flex-direction:column;color:#f6ecdf}
+.gloss{position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,.10),rgba(255,255,255,0) 40%,rgba(0,0,0,.10));pointer-events:none}
+.hinge{position:absolute;left:0;top:0;bottom:0;width:46px;background:linear-gradient(90deg,rgba(0,0,0,.18),rgba(255,255,255,.08) 55%,rgba(0,0,0,.2));pointer-events:none}
+.noise{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:multiply;opacity:.3;pointer-events:none}
+
+</style>
+<div class="wrap">
+ <header class="top"><div class="topbar"><span>The definitive guide · Vol. 01</span><b>@0xMorlex</b></div></header>
+ <section class="hero" aria-label="About the book">
+  <div><h1><span class="pix">Opus 5.5</span>GTM + Grok Bot</h1>
+   <p>The operator's handbook — 19 pages on running go-to-market with Claude Code and a Grok trend radar.</p></div>
+  <div class="meta"><b>19 pages · 6 chapters</b><br>Facts checked against Anthropic's docs<br>Edition Oct 2026</div>
+ </section>
+ <div class="stage bookroot" id="stage" tabindex="0" role="region" aria-label="Book. Use left and right arrow keys to turn pages.">
+  <div class="world" id="world">
+   <div id="shadowEl"></div>
+   <div id="persp"><div id="book">
+    <div class="abs board"></div><div class="abs" id="stack"></div><div id="spine" class="abs"></div>
+<div class="leaf paper" id="L10"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Chapter 06 · The Loop</span></div>
+<div class="kick c-mustard">Chapter 06</div>
+<h1>THE LOOP</h1>
+<p class="dek">Find it. Write it. Ship it. Repeat.</p>
+<svg viewBox="0 0 880 620" width="100%" style="margin-top:6px">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#2e6e68"/></marker></defs>
+<circle cx="440" cy="310" r="220" fill="none" stroke="#d9cdbb" stroke-width="3" stroke-dasharray="10 12"/>
+<path d="M545 118 A220 220 0 0 1 628 205" fill="none" stroke="#2e6e68" stroke-width="6" marker-end="url(#ah)"/>
+<path d="M628 415 A220 220 0 0 1 545 502" fill="none" stroke="#2e6e68" stroke-width="6" marker-end="url(#ah)"/>
+<path d="M335 502 A220 220 0 0 1 252 415" fill="none" stroke="#2e6e68" stroke-width="6" marker-end="url(#ah)"/>
+<path d="M252 205 A220 220 0 0 1 335 118" fill="none" stroke="#2e6e68" stroke-width="6" marker-end="url(#ah)"/>
+<g font-family="Silkscreen,ui-monospace,monospace" font-weight="700" text-anchor="middle">
+<rect x="310" y="40" width="260" height="100" rx="16" fill="#221a16"/><text x="440" y="86" font-size="34" fill="#f0936d">GROK</text><text x="440" y="122" font-size="26" fill="#f6efe3">FINDS IT</text>
+<rect x="600" y="260" width="270" height="100" rx="16" fill="#c4643f"/><text x="735" y="306" font-size="34" fill="#f6efe3">OPUS 5.5</text><text x="735" y="342" font-size="26" fill="#f6efe3">WRITES IT</text>
+<rect x="310" y="480" width="260" height="100" rx="16" fill="#2e6e68"/><text x="440" y="526" font-size="34" fill="#f6efe3">GTM</text><text x="440" y="562" font-size="26" fill="#f6efe3">SHIPS IT</text>
+<rect x="10" y="260" width="260" height="100" rx="16" fill="#f6e6c2" stroke="#c9922a" stroke-width="3"/><text x="140" y="306" font-size="32" fill="#221a16">SIGNALS</text><text x="140" y="342" font-size="24" fill="#6b5233">WHAT LANDED</text>
+</g>
+<text x="440" y="300" text-anchor="middle" font-family="Instrument Serif,Georgia,serif" font-style="italic" font-size="52" fill="#9e4a2c">every</text>
+<text x="440" y="352" text-anchor="middle" font-family="Instrument Serif,Georgia,serif" font-style="italic" font-size="52" fill="#9e4a2c">morning</text>
+</svg>
+<p>The radar picks the topic. Opus 5.5 reads the sources and drafts. The pipeline puts it in front of the right people. What lands — replies, follows, booked calls — tells tomorrow's radar what to look for.</p>
+<p>Run it daily and the loop compounds: better topics, faster drafts, a sharper ICP.</p>
+<div class="pf"><span>@0xMorlex · Claude Code Bible for GTM Engineers</span><b>19</b></div></div><div class="shade"></div></div><div class="face back blank"></div></div>
+<div class="leaf paper" id="L9"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Templates</span></div>
+<h1 class="sm">TEMPLATES</h1>
+<p class="dek">Skeletons, not scripts.</p>
+<div class="fn c-terra">POST</div>
+<pre><span class="k">HOOK</span>   the one surprising fact
+<span class="k">PROOF</span>  the number + its source link
+<span class="k">WHY</span>    what it changes for the reader
+<span class="k">CTA</span>    one question or one link</pre>
+<div class="fn c-teal">THREAD</div>
+<pre><span class="k">1/</span> the claim, in one line
+<span class="k">2/</span> the evidence <span class="c">(with links)</span>
+<span class="k">3/</span> how it works
+<span class="k">4/</span> how to use it today
+<span class="k">5/</span> the takeaway + follow</pre>
+<div class="fn c-mustard">REPLY TO A BIG ACCOUNT</div>
+<pre><span class="k">ADD</span>    one fact they didn't mention
+<span class="k">LINK</span>   where it comes from
+<span class="k">STOP</span>   no pitch</pre>
+<div class="fn c-terra">FILLED — FROM THIS BOOK</div>
+<div class="call terra" style="font-family:Inter,system-ui,sans-serif">Opus 5.5 is cheaper than Opus 5 on every token.<br>$4 / $20 per 1M vs $5 / $25 — anthropic.com/claude-opus-5-5<br>Batch-scoring a 50K-row list just got cheaper.<br>What would you rerun at this price?</div>
+<p class="small">Keep the source in the post or in the first reply.</p>
+<div class="pf"><span>Fill from the digest · draft with Opus 5.5</span><b>17</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Checklist</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">CHECKLIST</h1>
+<p class="dek">Before anything ships.</p>
+<div class="cl">
+<div><i></i><span>Every number has a link next to it</span></div>
+<div><i></i><span>The link says what the post says</span></div>
+<div><i></i><span>Dates checked — "new" is really new</span></div>
+<div><i></i><span>Model names and prices match the docs</span></div>
+<div><i></i><span>Rumors are marked as unconfirmed</span></div>
+<div><i></i><span>One idea per post</span></div>
+<div><i></i><span>A human read it before it went out</span></div>
+</div>
+<h2 class="sq-terra">Why it matters</h2>
+<p>Accuracy is the brand. One wrong number costs more reach than ten good posts earn, and a correction travels slower than the original.</p>
+<h2 class="sq-mustard">When something slips</h2>
+<ul>
+<li>Correct it in a reply and pin the correction.</li>
+<li>Add the miss to CLAUDE.md so it can't repeat.</li>
+</ul>
+<div class="call teal"><b>Shortcut.</b> Put this list in CLAUDE.md under "Never" — the agent checks it before you do.</div>
+<div class="pf"><b>18</b><span>Print it. Tape it next to the screen.</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L8"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">The Digest</span></div>
+<h1 class="sm">THE DIGEST</h1>
+<p class="dek">What lands in the chat — and how to read it.</p>
+<div class="dig"><div class="dh"><span>DIGEST · LAST 12H</span><span>TOP 10</span></div>
+<div class="dr"><b>01</b><i style="width:58%"></i><em class="c-teal">▲ rising</em></div>
+<div class="dr"><b>02</b><i style="width:47%"></i><em class="c-teal">▲ rising</em></div>
+<div class="dr"><b>03</b><i style="width:52%"></i><em class="c-mustard">● steady</em></div>
+<div class="dr"><b>04</b><i style="width:40%"></i><em class="c-terra">▼ fading</em></div>
+<div class="dlab">topic · why it's hot · post angle · links</div></div>
+<h2 class="sq-teal">Pick 3</h2>
+<p>Take the rising topics with the best sources. Steady topics are fine for threads; fading ones are for replies, not new posts.</p>
+<h2 class="sq-terra">Check the links</h2>
+<p>Open every link before you write. Primary sources — the company blog, docs, the paper — beat screenshots of screenshots.</p>
+<table class="t">
+<tr><th>Status</th><th>Best format</th></tr>
+<tr><td class="c-teal"><b>▲ rising</b></td><td>a post now, a thread by evening</td></tr>
+<tr><td class="c-mustard"><b>● steady</b></td><td>a deeper thread or an article</td></tr>
+<tr><td class="c-terra"><b>▼ fading</b></td><td>replies only — add a missing fact</td></tr>
+</table>
+<div class="call mustard"><b>Why velocity.</b> A topic gaining fast beats one that is already everywhere — you want to be early, not loud.</div>
+<div class="pf"><span>Format preview — topics fill in on every run</span><b>15</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Chapter 05 · Routine</span><span>Opus 5.5 × GTM × Grok</span></div>
+<div class="kick c-teal">Chapter 05</div>
+<h1>MORNING RUN</h1>
+<p class="dek">From radar to posted in one sitting.</p>
+<div class="tl">
+<div><b class="c-terra">08:00</b><span><b>Press start.</b> The 12h digest lands in Grok.</span></div>
+<div><b class="c-terra">08:10</b><span><b>Pick 3.</b> Rising topics with primary sources.</span></div>
+<div><b class="c-teal">08:15</b><span><b>Research.</b> Opus 5.5 reads the sources for each topic — links first, claims second.</span></div>
+<div><b class="c-teal">08:40</b><span><b>Draft.</b> One post and one thread per topic from the templates.</span></div>
+<div><b class="c-mustard">09:00</b><span><b>Fact-check.</b> Every number against its link.</span></div>
+<div><b class="c-mustard">09:15</b><span><b>Ship.</b> Schedule it and log what went out.</span></div>
+</div>
+<p>The whole run fits before the first meeting. The research step is where Opus 5.5 earns its place: it reads long sources quickly and quotes them back with the link.</p>
+<h2 class="sq-mustard">Weekly</h2>
+<ul>
+<li><b>Monday</b> — run the 7D map and plan the long-form piece.</li>
+<li><b>Friday</b> — look at what landed and update the TRACK list.</li>
+</ul>
+<div class="call terra"><b>House rule.</b> If a number has no link, it doesn't ship.</div>
+<div class="pf"><b>16</b><span>Feeds Chapter 06 — what lands tunes tomorrow's radar</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L7"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Chapter 04 · Signal</span></div>
+<div class="kick c-terra">Chapter 04</div>
+<h1>GROK BOT</h1>
+<p class="dek">A morning trend radar for AI topics.</p>
+<p>A bot in Grok that finds the freshest and most talked-about AI topics, so you post while they are rising — not after they peak. Claude writes the prompt; you paste it into Grok and press start.</p>
+<div class="chips"><span class="ch-terra">Claude Code</span><span class="ch-teal">Opus</span><span class="ch-mustard">GPT</span><span class="ch-terra">Grok</span><span class="ch-teal">Anthropic</span></div>
+<table class="t">
+<tr><th>Mode</th><th>Window</th><th>When</th></tr>
+<tr><td class="c-terra"><b>12H</b></td><td>last 12 hours</td><td>every morning — the default run</td></tr>
+<tr><td class="c-teal"><b>1D</b></td><td>last day</td><td>evening wrap or a missed morning</td></tr>
+<tr><td class="c-mustard"><b>7D</b></td><td>last week</td><td>weekly map, long-form ideas</td></tr>
+</table>
+<h2 class="sq-terra">Why Grok for this</h2>
+<p>Grok reads X in real time, and X is where AI news usually breaks first. The radar lives where the signal is.</p>
+<h2 class="sq-teal">How it runs</h2>
+<ul>
+<li>On demand — you press start; no schedule to babysit.</li>
+<li>Output stays in the Grok chat.</li>
+<li>Each topic comes back with why it's hot, a post angle and links.</li>
+</ul>
+<div class="pf"><span>Built in Grok · prompt drafted with Claude</span><b>13</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">The Prompt</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">THE PROMPT</h1>
+<p class="dek">A skeleton to paste into Grok.</p>
+<pre><span class="k">ROLE</span>    AI trend radar for an X creator
+<span class="k">WINDOW</span>  last 12h   <span class="c">(swap: 1d / 7d)</span>
+<span class="k">TRACK</span>   Claude Code, Opus, GPT, Grok,
+        Anthropic — plus anything new
+        that is clearly breaking out
+<span class="k">SOURCES</span> X posts and news from the window
+<span class="k">RANK</span>    by velocity, not raw volume
+<span class="k">RETURN</span>  top 10, each with:
+        - topic (one line)
+        - why it's hot right now
+        - one post angle for X
+        - 2+ source links
+<span class="k">RULES</span>   <span class="s">no link, no claim</span>
+        say "unconfirmed" when it is
+        skip anything older than WINDOW</pre>
+<h2 class="sq-teal">Variants</h2>
+<ul>
+<li><b>1D</b> — same prompt, <code>WINDOW last 1d</code>, top 5.</li>
+<li><b>7D</b> — <code>RANK by staying power</code>, top 10, group by theme.</li>
+<li><b>Niche</b> — swap TRACK for one company or one product.</li>
+</ul>
+<h2 class="sq-mustard">Why each line is there</h2>
+<p><b>RANK by velocity</b> keeps yesterday's big story from crowding out today's rising one. <b>2+ links</b> lets you check a claim before it ships. <b>"Unconfirmed"</b> turns rumors into a flag instead of a fact.</p>
+<div class="pf"><b>14</b><span>Template — change the window per run</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L6"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Log Every Run</span></div>
+<h1 class="sm">LOG EVERY RUN</h1>
+<p class="dek">One hook, a full audit trail.</p>
+<div class="fn">.claude/settings.json</div>
+<pre>{
+  <span class="k">"hooks"</span>: {
+    <span class="k">"PostToolUse"</span>: [{
+      <span class="k">"matcher"</span>: <span class="s">"Write"</span>,
+      <span class="k">"hooks"</span>: [{
+        <span class="k">"type"</span>: <span class="s">"command"</span>,
+        <span class="k">"command"</span>: <span class="s">"./scripts/log-run.sh"</span>
+      }]
+    }]
+  }
+}</pre>
+<div class="fn">scripts/log-run.sh</div>
+<pre><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># one line per file the agent writes</span>
+payload=$(cat)
+file=$(echo "$payload" | jq -r <span class="s">'.tool_input.file_path'</span>)
+echo "$(date -u +%FT%TZ) $file" &gt;&gt; logs/runs.log</pre>
+<div class="fn">scripts/gate.sh · PreToolUse, matcher "Bash"</div>
+<pre>cmd=$(jq -r <span class="s">'.tool_input.command // ""'</span>)
+if [[ "$cmd" == *send-sequence* ]] &amp;&amp; [ ! -f approved.flag ]; then
+  echo <span class="s">"Needs human approval first"</span> &gt;&amp;2
+  exit 2   <span class="c"># blocks the call</span>
+fi</pre>
+<p>After every <code>Write</code>, Claude Code pipes the call's details to your script. You get a timestamped list of every file the run produced.</p>
+<div class="pf"><span>Hook input arrives as JSON on stdin</span><b>11</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Token Management</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">TOKENS</h1>
+<p class="dek">Pay for thinking, not for re-reading.</p>
+<table class="t">
+<tr><th>Lever</th><th>What it does</th><th>Use for</th></tr>
+<tr><td class="c-terra"><b>Caching</b></td><td>Reads at $0.20 vs $4 input — 95% off</td><td>Rubric, CLAUDE.md, long lists</td></tr>
+<tr><td class="c-teal"><b>Batch API</b></td><td>50% off input and output</td><td>Overnight scoring</td></tr>
+<tr><td class="c-mustard"><b>Fast mode</b></td><td>Up to 2.5× faster at 2× price</td><td>Only when someone waits</td></tr>
+<tr><td class="c-terra"><b>Effort</b></td><td>Less thinking per call</td><td>Bulk rows; keep medium for drafts</td></tr>
+<tr><td class="c-teal"><b>Subagents</b></td><td>Parallel work, clean contexts</td><td>Research per account</td></tr>
+<tr><td class="c-mustard"><b>/compact</b></td><td>Summarizes a long session</td><td>Marathon cleanup runs</td></tr>
+</table>
+<h2 class="sq-teal">Order of operations</h2>
+<p>Cache first — it is the biggest and safest saving. Move anything that can wait into Batch. Lower effort on mechanical rows. Only then think about a cheaper model for the simplest steps.</p>
+<h2 class="sq-mustard">Watch the meter</h2>
+<ul>
+<li><code>/cost</code> shows what a session has spent when you're on API billing.</li>
+<li><code>/clear</code> between unrelated jobs — old context costs on every turn.</li>
+</ul>
+<div class="call teal"><b>Example.</b> 10M tokens of reused context: $40 uncached → $2 cached. The 1M context window makes it tempting to paste everything — cache it instead.</div>
+<div class="pf"><b>12</b><span>Prices per 1M tokens · anthropic.com/claude-opus-5-5</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L5"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">The Skill</span></div>
+<h1 class="sm">THE SKILL</h1>
+<p class="dek">Package the scoring step once. Run it every day.</p>
+<p>A skill is a folder with a <code>SKILL.md</code> file: a name, a one-line description that tells Claude when to use it, and the steps. Supporting files sit next to it.</p>
+<pre><span class="c">.claude/skills/icp-score/</span>
+├── SKILL.md
+├── rubric.md
+└── examples/good-fit.csv</pre>
+<pre><span class="c"># SKILL.md</span>
+---
+<span class="k">name:</span> icp-score
+<span class="k">description:</span> Score accounts 0-100 against
+  our ICP rubric. Use for any account list.
+---
+1. Read the CSV the user passes
+2. Per row: industry, size, signal + link
+3. Score with rubric.md, one-line reason
+4. Write scored.csv and a top-20 brief</pre>
+<pre class="term"><span class="c">$</span> claude -p <span class="s">"Score accounts.csv with the
+  icp-score skill"</span> --model claude-opus-5-5</pre>
+<h2 class="sq-teal">Write the description like a trigger</h2>
+<p>Claude reads the description to decide when a skill applies. Say what it does <i>and</i> when to use it — "Use for any account list" does more work than "ICP scorer".</p>
+<p class="small"><code>-p</code> runs Claude Code headless — useful for scripts and scheduled jobs.</p>
+<div class="pf"><span>Skills = folders with a SKILL.md</span><b>09</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Hooks + MCP</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">HOOKS + MCP</h1>
+<p class="dek">Wire the agent into your stack — and put gates on it.</p>
+<h2 class="sq-teal">MCP: give it tools</h2>
+<p>The Model Context Protocol connects Claude to outside systems through servers: your CRM, an enrichment API, web search, a spreadsheet. Claude sees each server's tools and decides when to call them.</p>
+<h2 class="sq-terra">Hooks: your code, on a schedule</h2>
+<p>Hooks are shell commands Claude Code runs at fixed points in a session. They don't depend on the model remembering — they always fire.</p>
+<table class="t">
+<tr><th>Event</th><th>Fires</th><th>GTM use</th></tr>
+<tr><td><code>PreToolUse</code></td><td>before a tool call</td><td>block sends without approval</td></tr>
+<tr><td><code>PostToolUse</code></td><td>after a tool call</td><td>log every file written</td></tr>
+<tr><td><code>UserPromptSubmit</code></td><td>on each prompt</td><td>attach today's date and ICP</td></tr>
+<tr><td><code>SessionStart</code></td><td>session begins</td><td>load the latest digest</td></tr>
+<tr><td><code>Stop</code></td><td>agent finishes</td><td>post a run summary</td></tr>
+</table>
+<p>Connect only what the pipeline needs. Every tool you add is something the agent can call — read access first, write access when the step is proven.</p>
+<div class="call mustard"><b>The gate.</b> A <code>PreToolUse</code> hook that exits with code 2 blocks the call and hands its message back to Claude.</div>
+<div class="pf"><b>10</b><span>Hooks are configured in .claude/settings.json</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L4"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Chapter 02 · Setup</span></div>
+<div class="kick c-teal">Chapter 02</div>
+<h1>CLAUDE.MD</h1>
+<p class="dek">The memory your agent reads first.</p>
+<p>Claude Code reads <code>CLAUDE.md</code> from your project at the start of every session. Whatever is there — who you sell to, how you score, what never to do — applies to every run without being repeated in the prompt.</p>
+<pre><span class="c"># GTM agent — rules</span>
+<span class="k">## Who we sell to</span>
+- B2B SaaS, 20–500 employees, EU + US
+- Buyer: Head of Growth or RevOps
+<span class="k">## ICP rubric (0–100)</span>
+- Industry fit ............ 30
+- Headcount fit ........... 20
+- Fresh signal (&lt;30 days) . 30
+- Stack match ............. 20
+<span class="k">## Voice</span>
+- One idea per line. No fluff.
+- Mention the signal in line one.
+<span class="k">## Never</span>
+- Send anything without approval
+- Invent a fact. <span class="s">No source = cut it</span></pre>
+<h2 class="sq-terra">Keep the rubric separate</h2>
+<p>CLAUDE.md can pull in other files with <code>@path</code> imports — e.g. <code>@docs/icp-rubric.md</code>. The rubric can then change weekly without touching the rules.</p>
+<ul>
+<li><b>Short beats complete.</b> Rules get followed; essays get skimmed.</li>
+<li><b>Fix the file, not the run.</b> When the agent gets it wrong, add one line here.</li>
+</ul>
+<div class="pf"><span>Example rubric — swap in your own ICP</span><b>07</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Chapter 03 · Pipeline</span><span>Opus 5.5 × GTM × Grok</span></div>
+<div class="kick c-mustard">Chapter 03</div>
+<h1>GTM</h1>
+<p class="dek">Engineering the pipeline with Claude Code.</p>
+<div class="flow"><span class="b-terra">Signal</span><span class="b-teal">Enrich</span><span class="b-mustard">Score</span><span class="b-terra">Write</span><span class="b-ink">Ship</span></div>
+<div class="cols">
+<h3 class="c-terra">1 · Signal</h3><p>Funding rounds, hiring, launches and leadership changes. Pull them in through MCP servers — web search, your CRM, job boards.</p>
+<h3 class="c-teal">2 · Enrich</h3><p>Turn every hit into one clean row per account: domain, size, industry, stack, the signal and its link. No duplicates.</p>
+<h3 class="c-mustard">3 · Score</h3><p>Apply the rubric from CLAUDE.md, 0–100, with a one-line reason. Same rubric every run so weeks compare cleanly.</p>
+<h3 class="c-terra">4 · Write</h3><p>One opener per lead, built on the real signal. If the signal has no link, the lead goes back to Enrich.</p>
+<h3>5 · Ship</h3><p>Push approved rows to the sequencer. A hook logs every file the agent writes, so each message traces back to its run.</p>
+</div>
+<table class="t">
+<tr><th>Stage</th><th>In</th><th>Out</th></tr>
+<tr><td class="c-terra"><b>Signal</b></td><td>watchlist, sources</td><td>raw hits + links</td></tr>
+<tr><td class="c-teal"><b>Enrich</b></td><td>raw hits</td><td>accounts.csv</td></tr>
+<tr><td class="c-mustard"><b>Score</b></td><td>accounts.csv</td><td>scored.csv + reasons</td></tr>
+<tr><td class="c-terra"><b>Write</b></td><td>top rows</td><td>openers.md</td></tr>
+<tr><td><b>Ship</b></td><td>approved rows</td><td>sequencer + log</td></tr>
+</table>
+<div class="pf"><b>08</b><span>Each stage maps to a prompt, a skill or a hook</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L3"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">What's New</span></div>
+<h1 class="sm">WHAT'S NEW</h1>
+<p class="dek">Five changes to know before you migrate an agent.</p>
+<div class="num"><b class="b-terra">1</b><div><h3>Thinking is always on</h3><p>Adaptive thinking can't be disabled. Budget for it instead of trying to switch it off.</p></div></div>
+<div class="num"><b class="b-teal">2</b><div><h3>Forced tool use returns an error</h3><p>Let the model choose its tools. Pipelines that forced a specific tool call need a rewrite.</p></div></div>
+<div class="num"><b class="b-mustard">3</b><div><h3>Effort sets the depth</h3><p>The <code>effort</code> parameter controls how hard it thinks. Default is <code>medium</code>; lower it for bulk rows.</p></div></div>
+<div class="num"><b class="b-terra">4</b><div><h3>Text between tool calls moved</h3><p>It now arrives in <code>thinking</code> blocks and is empty at the default <code>display</code> setting. If your app streams it as progress, set <code>display</code>.</p></div></div>
+<div class="num"><b class="b-teal">5</b><div><h3>Thinking blocks are bound</h3><p>They are tied to the model and conversation that produced them — don't replay them into another model.</p></div></div>
+<h2 class="sq-teal">Migration checklist</h2>
+<ul>
+<li>Delete any code that tries to turn thinking off.</li>
+<li>Replace forced tool calls with a clear instruction in the prompt.</li>
+<li>Re-test streaming UIs with <code>display</code> set.</li>
+</ul>
+<div class="call mustard"><b>Also.</b> The older <code>computer_20251124</code> tool is not accepted on the Claude API. Minimum cacheable prompt is 512 tokens.</div>
+<div class="pf"><span>platform.claude.com/docs · Opus 5.5 overview · migration guide</span><b>05</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Plans + API</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">PLANS + API</h1>
+<p class="dek">Where it runs and what changed on subscriptions.</p>
+<h2 class="sq-terra">On your plan</h2>
+<p>Five-hour usage limits went up on Pro, Max, Team and seat-based Enterprise. Subscribers also get one rate-limit reset they can save and use when they choose.</p>
+<h2 class="sq-teal">Platforms</h2>
+<table class="t kv">
+<tr><td>Claude API</td><td><code>claude-opus-5-5</code></td></tr>
+<tr><td>Amazon Bedrock</td><td><code>anthropic.claude-opus-5-5</code></td></tr>
+<tr><td>Also on</td><td>Google Cloud, Microsoft Foundry, Claude Platform on AWS</td></tr>
+<tr><td>Apps</td><td>Claude apps and Claude Code</td></tr>
+<tr><td>Data</td><td>Zero data retention supported</td></tr>
+</table>
+<h2 class="sq-mustard">Safety, in brief</h2>
+<p>Anthropic's automated behavioral audit covers nearly 2,000 scenarios; Opus 5.5 scored best of recent Claude models on nearly every misalignment measure. It tied Fable 5.1 for the lowest prompt-injection success rate on a Gray Swan benchmark.</p>
+<h2 class="sq-terra">Coming next</h2>
+<p>Anthropic said Sonnet 5.5 and Haiku 5.5 would follow "in the coming weeks" (as of Sep 22, 2026).</p>
+<div class="pf"><b>06</b><span>platform.claude.com/docs · Opus 5.5 overview · anthropic.com/claude-opus-5-5</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L2"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Benchmarks</span></div>
+<h1 class="sm">THE NUMBERS</h1>
+<p class="dek">Coding and agent benchmarks, as published by Anthropic.</p>
+<div class="legend"><span><i class="b-terra"></i>Opus 5.5</span><span><i class="b-teal"></i>Fable 5.1</span><span><i class="b-sand"></i>Opus 5</span></div>
+<div id="bars"></div>
+<h2 class="sq-terra">Beyond code</h2>
+<table class="t">
+<tr><th>Benchmark</th><th class="r c-terra">Opus 5.5</th><th class="r">Fable 5.1</th><th class="r">Opus 5</th></tr>
+<tr><td>GDPval-AA v2.1 (Elo)</td><td class="r"><b>1846</b></td><td class="r">1735</td><td class="r">1708</td></tr>
+<tr><td>Humanity's Last Exam (tools)</td><td class="r"><b>67.7%</b></td><td class="r">65.6%</td><td class="r">63.6%</td></tr>
+<tr><td>Chartography (tools)</td><td class="r"><b>89.0%</b></td><td class="r">88.4%</td><td class="r">83.4%</td></tr>
+</table>
+<p class="small">Anthropic ran the coding results in the Claude Code harness. At default (medium) effort Opus 5.5 scored 54.6% on FrontierCode — about one fifth of GPT-6 Astra's cost per task for a higher score.</p>
+<div class="pf"><span>anthropic.com/claude-opus-5-5 · Claude Code harness</span><b>03</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">In the Field</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">IN THE FIELD</h1>
+<p class="dek">What early testers reported — long, repetitive, checkable work.</p>
+<div class="case"><b class="c-terra">&lt;3 h</b><div><h3>Codebase audit</h3><p>A 200,000-line codebase audited and fixed in under three hours. Opus 5 took more than 20 hours and 2.5× the tokens.</p></div></div>
+<div class="case"><b class="c-teal">72%</b><div><h3>Code review — Deloitte</h3><p>Caught 72% of known bugs at its lowest effort setting, versus 56% for Opus 5 at high effort.</p></div></div>
+<div class="case"><b class="c-mustard">9.5 h</b><div><h3>C → Rust migration</h3><p>An HAProxy rewrite took 9.5 hours versus 12 for Fable 5.1, at 51% lower cost.</p></div></div>
+<div class="case"><b class="c-terra">63 min</b><div><h3>Merger model</h3><p>Built in 63 minutes versus 93 for Opus 5, at 50% lower cost.</p></div></div>
+<div class="case"><b class="c-teal">39/40</b><div><h3>Load-time optimization</h3><p>Succeeded 39 of 40 times across a web app in an internal test.</p></div></div>
+<div class="case"><b class="c-mustard">16/18</b><div><h3>Financial reports</h3><p>16 of 18 reports met the quality bar in an internal test; neither Fable 5.1 nor Opus 5 cleared it.</p></div></div>
+<div class="call teal"><b>Why GTM cares.</b> Cleaning a 50K-row CRM export has the same shape as an audit: long, repetitive and easy to verify line by line.</div>
+<div class="pf"><b>04</b><span>anthropic.com/claude-opus-5-5 · customer and internal tests</span></div></div><div class="shade"></div></div></div>
+<div class="leaf paper" id="L1"><div class="face front gutter-l"><div class="pg"><div class="rh"><span>Opus 5.5 × GTM × Grok</span><span class="bk">Chapter 01 · The Engine</span></div>
+<div class="kick c-terra">Chapter 01</div>
+<h1>OPUS 5.5</h1>
+<p class="dek">The model under the hood of every workflow in this book.</p>
+<p>Opus 5.5 is the first model of the Claude 5.5 family. Anthropic released it on <b>September 22, 2026</b> and says it reaches the level of Claude Fable 5.1 on most work while keeping Opus pricing.</p>
+<p>For a GTM engineer that shows up in three places: a context window big enough for whole account lists and CRM exports, cheaper tokens for batch scoring, and stronger agent behavior inside Claude Code — it delegates to subagents more effectively and runs its own self-checks.</p>
+<h2 class="sq-teal">Spec sheet</h2>
+<table class="t kv">
+<tr><td>Model ID</td><td><code>claude-opus-5-5</code></td></tr>
+<tr><td>Released</td><td>Sep 22, 2026</td></tr>
+<tr><td>Context window</td><td><b>1M tokens</b></td></tr>
+<tr><td>Max output</td><td>128K tokens · 300K on Batch API (beta)</td></tr>
+<tr><td>Price / 1M</td><td><b>$4</b> input · <b>$20</b> output</td></tr>
+<tr><td>Thinking</td><td>Adaptive, always on</td></tr>
+<tr><td>Effort</td><td>Parameter, default <code>medium</code></td></tr>
+<tr><td>Knowledge cutoff</td><td>Jun 2026</td></tr>
+</table>
+<div class="call teal"><b>In one line.</b> Frontier quality on a smaller bill — the default model for every chapter that follows.</div>
+<div class="pf"><span>anthropic.com/claude-opus-5-5 · platform.claude.com/docs</span><b>01</b></div></div><div class="shade"></div></div><div class="face back gutter-r"><div class="pg"><div class="rh"><span class="bk">Cost + Speed</span><span>Opus 5.5 × GTM × Grok</span></div>
+<h1 class="sm">COST + SPEED</h1>
+<p class="dek">Cheaper than the model it replaces — on every line of the bill.</p>
+<p>Every token price is lower than on Opus 5. Anthropic also reports that typical workloads at default settings cost <b>about 40% less</b> to run, and that output generation is <b>more than 30% faster</b>.</p>
+<table class="t">
+<tr><th>Per 1M tokens</th><th class="r c-terra">Opus 5.5</th><th class="r">Opus 5</th><th class="r">Change</th></tr>
+<tr><td>Input</td><td class="r"><b>$4</b></td><td class="r">$5</td><td class="r c-teal">−20%</td></tr>
+<tr><td>Output</td><td class="r"><b>$20</b></td><td class="r">$25</td><td class="r c-teal">−20%</td></tr>
+<tr><td>Cache reads</td><td class="r"><b>$0.20</b></td><td class="r">$0.50</td><td class="r c-teal">−60%</td></tr>
+<tr><td>Cache writes (5m)</td><td class="r"><b>$5</b></td><td class="r">$6.25</td><td class="r c-teal">−20%</td></tr>
+</table>
+<h2 class="sq-mustard">Fast mode</h2>
+<p>A lower-latency Opus 5.5 in Claude Code and on the Claude Platform: up to <b>2.5× faster</b>, priced at <b>$8 input / $40 output</b> per 1M tokens — exactly double.</p>
+<p>Use it when a human is waiting — live calls, demos, debugging. Skip it for anything that runs while you sleep.</p>
+<h2 class="sq-teal">Batch API</h2>
+<p>Half price on input and output. Overnight ICP scoring, enrichment and first-draft openers all belong here.</p>
+<div class="call mustard"><b>Quick math.</b> Re-reading 10M tokens of the same context costs $40 at the input price and $2 as cache reads.</div>
+<div class="pf"><b>02</b><span>anthropic.com/claude-opus-5-5</span></div></div><div class="shade"></div></div></div>
+
+    <div class="leaf cover" id="L0"><div class="face front">
+<div class="sw"><div class="top"></div>
+ <div class="c">
+  <div style="display:flex;justify-content:space-between;font-family:JetBrains Mono,ui-monospace,monospace"><span style="font-size:22px;letter-spacing:.3em;color:#e98a5f">THE DEFINITIVE GUIDE</span><span style="font-size:22px;letter-spacing:.2em;color:#8f7f72">VOL.01</span></div>
+  <div style="font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:340px;line-height:.82;letter-spacing:-.06em;margin-top:44px">5.5</div>
+  <div style="font-family:Silkscreen,ui-monospace,monospace;font-weight:700;font-size:58px;margin-top:18px;color:#e98a5f;letter-spacing:.04em">OPUS</div>
+  <div style="margin-top:150px;font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:96px;line-height:.95;letter-spacing:-.03em;color:#1c1613">GTM<br>+ GROK BOT</div>
+  <div style="font-family:Instrument Serif,Georgia,serif;font-style:italic;font-size:52px;margin-top:24px;color:#fbefe2">The operator's handbook.</div>
+  <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-top:3px solid #1c1613;padding-top:20px;font-family:JetBrains Mono,ui-monospace,monospace">
+   <span style="font-size:23px;color:#1c1613;line-height:1.6">Engine · Setup · Pipeline<br>Signal · Routine · Loop</span>
+   <span style="font-size:24px;color:#1c1613;font-weight:700">@0xMorlex</span></div>
+ </div></div>
+<div class="noise"></div><div class="hinge"></div><div class="gloss"></div><div class="shade"></div></div><div class="face back"><div class="ep">
+ <div class="lbl">THE DEFINITIVE GUIDE · VOL. 01</div>
+ <div class="big">OPUS 5.5<br><span class="x">×</span> GTM<br><span class="x">×</span> GROK BOT</div>
+ <div class="toc"><div><i>01</i>The engine — Opus 5.5<em>01</em></div><div><i>02</i>Setup — CLAUDE.md<em>07</em></div><div><i>03</i>The GTM pipeline<em>08</em></div><div><i>04</i>The Grok trend radar<em>13</em></div><div><i>05</i>The morning run<em>16</em></div><div><i>06</i>The loop<em>19</em></div></div>
+ <div class="foot">Written for operators who ship.<br>@0xMorlex · Oct 2026</div>
+</div><div class="shade"></div></div></div>
+   </div></div>
+  </div>
+  <div class="hint" id="hint">Tap the book to open it</div>
+ </div>
+ <div class="controls">
+  <button class="btn" type="button" id="prev">← Prev</button>
+  <span class="pageno" id="pageno" aria-live="polite">Cover</span>
+  <button class="btn" type="button" id="next">Open →</button>
+  <button class="btn solid" type="button" id="read">Read up close</button>
+ </div>
+ <section class="chapters" aria-label="Chapters">
+  <div class="sec-h"><h2>CONTENTS</h2><span>Jump to a chapter</span></div>
+  <ul class="chaps"><li><button class="chap" type="button" data-page="1" id="chap-01">
+<span class="chap-n">01</span><span class="chap-t">The engine</span><span class="chap-d">Opus 5.5 specs, prices, benchmarks and field results</span>
+<span class="chap-p">pp. 01–06</span></button></li><li><button class="chap" type="button" data-page="7" id="chap-02">
+<span class="chap-n">02</span><span class="chap-t">Setup</span><span class="chap-d">CLAUDE.md — the rules every run follows</span>
+<span class="chap-p">p. 07</span></button></li><li><button class="chap" type="button" data-page="8" id="chap-03">
+<span class="chap-n">03</span><span class="chap-t">The GTM pipeline</span><span class="chap-d">Signal → Enrich → Score → Write → Ship, skills, hooks, tokens</span>
+<span class="chap-p">pp. 08–12</span></button></li><li><button class="chap" type="button" data-page="13" id="chap-04">
+<span class="chap-n">04</span><span class="chap-t">The Grok trend radar</span><span class="chap-d">The bot, the prompt and the digest</span>
+<span class="chap-p">pp. 13–15</span></button></li><li><button class="chap" type="button" data-page="16" id="chap-05">
+<span class="chap-n">05</span><span class="chap-t">The morning run</span><span class="chap-d">Routine, post templates and the pre-ship checklist</span>
+<span class="chap-p">pp. 16–18</span></button></li><li><button class="chap" type="button" data-page="19" id="chap-06">
+<span class="chap-n">06</span><span class="chap-t">The loop</span><span class="chap-d">How what lands tunes tomorrow's radar</span>
+<span class="chap-p">p. 19</span></button></li></ul>
+ </section>
+ <footer>
+  <div class="foot-grid">
+   <div><h3>Sources</h3><ul><li><a href="https://www.anthropic.com/claude-opus-5-5" target="_blank" rel="noopener">Introducing Claude Opus 5.5 — Anthropic</a></li><li><a href="https://platform.claude.com/docs/en/models/opus-5-5/overview" target="_blank" rel="noopener">Claude Opus 5.5 — Claude Platform Docs</a></li><li><a href="https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5" target="_blank" rel="noopener">What's new in Claude Opus 5.5 — Docs</a></li><li><a href="https://platform.claude.com/docs/en/models/opus-5-5/migration-guide" target="_blank" rel="noopener">Claude Opus 5.5 migration guide — Docs</a></li></ul></div>
+   <div><div class="handle">@0xMorlex</div><p>AI and GTM content. Every number in this book links back to its source.</p></div>
+  </div>
+ </footer>
+</div>
+<div class="reader bookroot" id="reader" hidden role="dialog" aria-modal="true" aria-label="Reading view">
+ <div class="reader-bar"><span id="rtitle">Reading</span><button class="btn" type="button" id="rclose">Close ✕</button></div>
+ <div class="reader-pages" id="rpages"></div>
+</div>
+<script>
+(function(){
+const NL=10, TOTAL=19;
+const B=[["Terminal-Bench 4.0",66.4,55.8,52.3],["FrontierCode v1.1",54.4,50.3,48.0],["CursorBench 4.0",57.8,51.8,46.6],["OSWorld 2.1 (partial)",81.8,80.7,74.0]];
+const COL=['var(--terra)','var(--teal)','var(--sand)'];
+const bars=document.getElementById('bars');
+if(bars) bars.innerHTML=B.map(r=>`<div class="bench"><div class="name">${r[0]}</div>`+[1,2,3].map(k=>`<div class="bar ${k==1?'a':''}"><div class="fill" style="width:${r[k]/100*720}px;background:${COL[k-1]}"></div><span class="num">${r[k].toFixed(1)}%</span></div>`).join('')+`</div>`).join('');
+
+const stage=document.getElementById('stage'), world=document.getElementById('world'), shadow=document.getElementById('shadowEl');
+const leaves=[...Array(NL+1).keys()].map(i=>document.getElementById('L'+i));
+const prevB=document.getElementById('prev'), nextB=document.getElementById('next'), pageno=document.getElementById('pageno'), hint=document.getElementById('hint');
+let n=0, side='R', single=false, k=.3;
+
+function layout(){
+  const W=stage.clientWidth;
+  single = W<820;
+  const H=Math.min(window.innerHeight*0.86, single? W*1.42 : W*0.7);
+  k = single ? Math.min(W/1120, H/1470) : Math.min(W/2240, H/1470);
+  stage.style.height=Math.round(1470*k+28)+'px';
+  apply();
+}
+function apply(){
+  // leaves
+  for(let i=0;i<=NL;i++){
+    const flipped = i<n;
+    const z = flipped ? (i===0?0.6:1+i*1.6) : (i===0?(NL+3)*1.6:(NL+1-i)*1.6);
+    leaves[i].style.transform=`translateZ(${z}px) rotateY(${flipped?-180:0}deg)`;
+    const sh=leaves[i].querySelectorAll(':scope>.face>.shade');
+    if(sh[0]) sh[0].style.opacity = flipped? .3 : 0;
+    if(sh[1]) sh[1].style.opacity = flipped? 0 : .3;
+  }
+  // camera
+  let cx;
+  if(n===0) cx=512; else if(single) cx = side==='L' ? -528 : 526; else cx=0;
+  world.style.transform=`translate(${-cx*k}px,${-10*k}px) scale(${k})`;
+  shadow.style.left = (n===0? 22 : -1051)+'px'; shadow.style.width=(n===0?1073:2146)+'px';
+  // ui
+  const L = n===0? null : (n===1? 'Contents' : 'p. '+String(2*(n-1)).padStart(2,'0'));
+  const R = n===0? null : 'p. '+String(2*n-1).padStart(2,'0');
+  pageno.textContent = n===0 ? 'Cover' : single ? (side==='L'?L:R) : (L+' · '+R.replace('p. ',''));
+  prevB.disabled = n===0;
+  nextB.textContent = n===0 ? 'Open →' : (atEnd()? 'Close book' : 'Next →');
+  hint.style.opacity = n===0 ? 1 : 0;
+}
+function atEnd(){ return n===NL && (!single || side==='R'); }
+function next(){
+  if(n===0){ n=1; side='L'; }
+  else if(atEnd()){ n=0; side='R'; }
+  else if(single && side==='L'){ side='R'; }
+  else { n++; side='L'; }
+  apply();
+}
+function prev(){
+  if(n===0) return;
+  if(single && side==='R'){ side='L'; }
+  else if(n===1){ n=0; side='R'; }
+  else { n--; side = single?'R':'L'; }
+  apply();
+}
+function goPage(p){ // p = printed page number, 1..19
+  n = Math.min(NL, Math.floor(p/2)+1); side = p%2===1 ? 'R':'L'; apply();
+  stage.scrollIntoView({behavior:'smooth',block:'center'});
+}
+prevB.onclick=prev; nextB.onclick=next;
+stage.addEventListener('click',e=>{
+  if(moved) return;
+  const r=stage.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width;
+  if(n===0) next(); else if(x<0.35) prev(); else next();
+});
+stage.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){next();e.preventDefault()} if(e.key==='ArrowLeft'){prev();e.preventDefault()} });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeReader(); });
+let sx=0, sy=0, moved=false;
+stage.addEventListener('touchstart',e=>{sx=e.touches[0].clientX; sy=e.touches[0].clientY; moved=false;},{passive:true});
+stage.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){ moved=true; dx<0?next():prev(); setTimeout(()=>moved=false,350); } });
+document.querySelectorAll('.chap').forEach(b=>b.onclick=()=>goPage(+b.dataset.page));
+
+// reader
+const reader=document.getElementById('reader'), rpages=document.getElementById('rpages'), rtitle=document.getElementById('rtitle');
+function faceHTML(which){
+  if(which==='cover') return [leaves[0].querySelector('.face.front').innerHTML,'cov'];
+  if(which==='endpaper') return [leaves[0].querySelector('.face.back').innerHTML,'cov ep-bg'];
+  const [i,s]=which; return [leaves[i].querySelector('.face.'+s).innerHTML,''];
+}
+function openReader(){
+  let list, label;
+  if(n===0){ list=['cover']; label='Cover'; }
+  else {
+    const L = n===1 ? 'endpaper' : [n-1,'back'];
+    const R = [n,'front'];
+    list = single ? [side==='L'?L:R] : [L,R];
+    label = pageno.textContent;
+  }
+  rpages.innerHTML='';
+  list.forEach(w=>{ const [h,cls]=faceHTML(w); const d=document.createElement('div'); d.className='rpage';
+    d.innerHTML=`<div class="inner ${cls}">${h}</div>`; rpages.appendChild(d); });
+  rtitle.textContent=label; reader.hidden=false; fit(); document.getElementById('rclose').focus();
+}
+function fit(){ rpages.querySelectorAll('.rpage').forEach(d=>{ const inner=d.firstChild; const w=d.clientWidth; const bw=inner.classList.contains('cov')?1073:1052, bh=inner.classList.contains('cov')?1427:1390;
+  if(window.innerWidth<820){ d.style.height=''; inner.querySelectorAll('.shade').forEach(x=>x.style.opacity=0); return; } const s=w/bw; inner.style.transform=`scale(${s})`; d.style.height=(bh*s)+'px';
+  inner.querySelectorAll('.shade').forEach(x=>x.style.opacity=0); }); }
+function closeReader(){ if(!reader.hidden){ reader.hidden=true; stage.focus(); } }
+document.getElementById('read').onclick=openReader;
+document.getElementById('rclose').onclick=closeReader;
+reader.addEventListener('click',e=>{ if(e.target===reader) closeReader(); });
+window.addEventListener('resize',()=>{ layout(); if(!reader.hidden) fit(); });
+layout();
+document.fonts && document.fonts.ready.then(layout);
+})();
+</script>
+</body></html>
